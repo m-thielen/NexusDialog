@@ -199,4 +199,16 @@ public class FormSectionController extends FormElementController {
     public void setError(String message) {
         // No error are possible on a section.
     }
+
+    /**
+     * Set readonly mode of all fields in this section.
+     *
+     * @param readonly if true, element will be readonly.
+     */
+    public void setReadonly(boolean readonly)
+    {
+        for (FormElementController element : this.getElements()) {
+            element.setReadonly(readonly);
+        }
+    }
 }

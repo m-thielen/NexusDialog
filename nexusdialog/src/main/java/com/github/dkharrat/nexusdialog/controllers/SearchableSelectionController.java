@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.github.dkharrat.nexusdialog.FormController;
@@ -53,6 +54,7 @@ public class SearchableSelectionController extends LabeledFieldController {
     private final LoadItemsTask loadItemsTask;
     private ProgressDialog loadingIndicator;
     private boolean otherSelectionIsShowing = false;
+    private boolean readonly;
 
     /**
      * An interface that provides the list of items to display for the {@link SearchableSelectionController}.
@@ -114,7 +116,7 @@ public class SearchableSelectionController extends LabeledFieldController {
         return isFreeFormTextAllowed;
     }
 
-    protected View createFieldView() {
+    protected View createFieldView(FrameLayout container) {
         final EditText editText = new EditText(getContext());
         editText.setId(editTextId);
 
@@ -145,6 +147,10 @@ public class SearchableSelectionController extends LabeledFieldController {
     }
 
     private void showSelectionDialog(final Context context, final EditText editText) {
+        if (this.readonly) {
+            return;
+        }
+
         if (items == null) {
             assert(loadItemsTask.getStatus() != Status.FINISHED);
             loadItemsTask.runTaskOnFinished(new Runnable() {
@@ -253,6 +259,7 @@ public class SearchableSelectionController extends LabeledFieldController {
     private void refresh(EditText editText) {
         String value = (String)getModel().getValue(getName());
         editText.setText(value != null ? value : "");
+        editText.setEnabled(!this.readonly);
     }
 
     @Override
@@ -286,5 +293,16 @@ public class SearchableSelectionController extends LabeledFieldController {
         protected void runTaskOnFinished(Runnable runnable) {
             doneRunnable = runnable;
         }
+    }
+
+    /**
+     * Set readonly mode.
+     *
+     * @param readonly if true, element will be readonly.
+     */
+    public void setReadonly(boolean readonly)
+    {
+        this.readonly = readonly;
+        refresh();
     }
 }

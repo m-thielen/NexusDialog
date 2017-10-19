@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.github.dkharrat.nexusdialog.FormController;
@@ -27,6 +28,7 @@ public class CheckBoxController extends LabeledFieldController {
     private final int CHECKBOX_ID = FormController.generateViewId();
     private final List<String> items;
     private final List<?> values;
+    private boolean readonly;
 
     /**
      * Constructs a new instance of a checkboxes field.
@@ -106,7 +108,7 @@ public class CheckBoxController extends LabeledFieldController {
     }
 
     @Override
-    protected View createFieldView() {
+    protected View createFieldView(FrameLayout container) {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup checkboxContainer = (ViewGroup) inflater.inflate(R.layout.form_checkbox_container, null);
 
@@ -144,6 +146,7 @@ public class CheckBoxController extends LabeledFieldController {
                         areValuesDefined() ? values.get(index) : index
                 )
         );
+        checkbox.setEnabled(!this.readonly);
     }
 
     @Override
@@ -188,4 +191,16 @@ public class CheckBoxController extends LabeledFieldController {
     private ViewGroup getContainer() {
         return (ViewGroup) getView().findViewById(R.id.form_checkbox_container);
     }
+
+    /**
+     * Set readonly mode.
+     *
+     * @param readonly if true, element will be readonly.
+     */
+    public void setReadonly(boolean readonly)
+    {
+        this.readonly = readonly;
+        refresh();
+    }
+
 }

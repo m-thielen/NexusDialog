@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class SelectionController extends LabeledFieldController {
     private final String prompt;
     private final List<String> items;
     private final List<?> values;
+    private boolean readonly;
 
     /**
      * Constructs a selection field
@@ -118,7 +120,7 @@ public class SelectionController extends LabeledFieldController {
     }
 
     @Override
-    protected View createFieldView() {
+    protected View createFieldView(FrameLayout container) {
         Spinner spinnerView = new Spinner(getContext());
         spinnerView.setId(spinnerId);
         spinnerView.setPrompt(prompt);
@@ -190,10 +192,22 @@ public class SelectionController extends LabeledFieldController {
         }
 
         spinner.setSelection(selectionIndex);
+        spinner.setEnabled(!this.readonly);
     }
 
     @Override
     public void refresh() {
         refresh(getSpinner());
+    }
+
+    /**
+     * Set readonly mode.
+     *
+     * @param readonly if true, element will be readonly.
+     */
+    public void setReadonly(boolean readonly)
+    {
+       this.readonly = readonly;
+        refresh();
     }
 }

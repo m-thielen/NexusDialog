@@ -3,6 +3,7 @@ package com.github.dkharrat.nexusdialog.controllers;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.github.dkharrat.nexusdialog.R;
 
@@ -26,7 +27,7 @@ public class ValueController extends LabeledFieldController {
     }
 
     @Override
-    protected View createFieldView() {
+    protected View createFieldView(FrameLayout container) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         final TextView textView = (TextView)layoutInflater.inflate(R.layout.value_field, null);
         refresh(textView);
@@ -46,4 +47,15 @@ public class ValueController extends LabeledFieldController {
     public void refresh() {
         refresh(getTextView());
     }
+
+    /**
+     * Set readonly mode. Does nothing, since this element is readonly by nature.
+     *
+     * @param readonly ignored.
+     */
+    public void setReadonly(boolean readonly)
+    {
+
+    }
+
 }

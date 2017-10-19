@@ -12,12 +12,12 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.github.dkharrat.nexusdialog.FormController;
 import com.github.dkharrat.nexusdialog.validations.InputValidator;
@@ -28,12 +28,13 @@ import com.github.dkharrat.nexusdialog.validations.InputValidator;
  * For the field value, the associated FormModel must return a {@link Date} instance. No selected date can be
  * represented by returning {@code null} for the value of the field.
  */
-public class DatePickerController extends LabeledFieldController {
+public class DatePickerController extends TextController {
     private final int editTextId = FormController.generateViewId();
 
     private DatePickerDialog datePickerDialog = null;
     private final SimpleDateFormat displayFormat;
     private final TimeZone timeZone;
+    private boolean readonly;
 
     /**
      * Constructs a new instance of a date picker field.
@@ -76,14 +77,9 @@ public class DatePickerController extends LabeledFieldController {
     }
 
     @Override
-    protected View createFieldView() {
-        final EditText editText = new EditText(getContext());
-        editText.setId(editTextId);
-
-        editText.setSingleLine(true);
-        editText.setInputType(InputType.TYPE_CLASS_DATETIME);
+    protected View createFieldView(FrameLayout container) {
+        final EditText editText = (EditText) super.createFieldView(container);
         editText.setKeyListener(null);
-        refresh(editText);
         editText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,8 +100,8 @@ public class DatePickerController extends LabeledFieldController {
     }
 
     private void showDatePickerDialog(final Context context, final EditText editText) {
-        // don't show dialog again if it's already being shown
-        if (datePickerDialog == null) {
+        // don't show dialog again if it's already being shown or we're readonly
+        if (!this.readonly && datePickerDialog == null) {
             Date date = (Date)getModel().getValue(getName());
             if (date == null) {
                 date = new Date();
@@ -137,16 +133,4 @@ public class DatePickerController extends LabeledFieldController {
         }
     }
 
-    private EditText getEditText() {
-        return (EditText)getView().findViewById(editTextId);
-    }
-
-    private void refresh(EditText editText) {
-        Date value = (Date)getModel().getValue(getName());
-        editText.setText(value != null ? displayFormat.format(value) : "");
-    }
-
-    public void refresh() {
-        refresh(getEditText());
-    }
 }

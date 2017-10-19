@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TimePicker;
 
 import com.github.dkharrat.nexusdialog.FormController;
@@ -25,6 +26,7 @@ public class TimePickerController extends LabeledFieldController {
     private final SimpleDateFormat displayFormat;
     private final TimeZone timeZone;
     private final boolean is24HourView;
+    private boolean readonly;
 
     /**
      * Constructs a new instance of a time picker field.
@@ -72,7 +74,7 @@ public class TimePickerController extends LabeledFieldController {
     }
 
     @Override
-    protected View createFieldView() {
+    protected View createFieldView(FrameLayout container) {
         final EditText editText = new EditText(getContext());
         editText.setId(editTextId);
 
@@ -100,8 +102,8 @@ public class TimePickerController extends LabeledFieldController {
     }
 
     private void showTimePickerDialog(Context context, final EditText editText) {
-        // don't show dialog again if it's already being shown
-        if (timePickerDialog == null) {
+        // don't show dialog again if it's already being shown or if we're readonly
+        if (!this.readonly && timePickerDialog == null) {
             Date date = (Date)getModel().getValue(getName());
             if (date == null) {
                 date = new Date();
@@ -140,10 +142,23 @@ public class TimePickerController extends LabeledFieldController {
     private void refresh(EditText editText) {
         Date value = (Date)getModel().getValue(getName());
         editText.setText(value != null ? displayFormat.format(value) : "");
+        editText.setEnabled(!this.readonly);
     }
 
     @Override
     public void refresh() {
         refresh(getEditText());
     }
+
+    /**
+     * Set readonly mode.
+     *
+     * @param readonly if true, element will be readonly.
+     */
+    public void setReadonly(boolean readonly)
+    {
+        this.readonly = readonly;
+        refresh();
+    }
+
 }

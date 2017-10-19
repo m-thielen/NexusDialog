@@ -1,11 +1,15 @@
 package com.github.dkharrat.nexusdialog.controllers;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.github.dkharrat.nexusdialog.FormController;
 import com.github.dkharrat.nexusdialog.FormElementController;
 import com.github.dkharrat.nexusdialog.R;
 import com.github.dkharrat.nexusdialog.validations.InputValidator;
@@ -131,9 +135,9 @@ public abstract class LabeledFieldController extends FormElementController {
      *
      * @return          the view for this element
      */
-    public View getFieldView() {
+    public View getFieldView(FrameLayout container) {
         if (fieldView == null) {
-            fieldView = createFieldView();
+            fieldView = createFieldView(container);
         }
         return fieldView;
     }
@@ -143,7 +147,7 @@ public abstract class LabeledFieldController extends FormElementController {
      *
      * @return          the newly created view for this field
      */
-    protected abstract View createFieldView();
+    protected abstract View createFieldView(FrameLayout container);
 
     @Override
     protected View createView() {
@@ -159,7 +163,7 @@ public abstract class LabeledFieldController extends FormElementController {
         }
 
         FrameLayout container = (FrameLayout)view.findViewById(R.id.field_container);
-        container.addView(getFieldView());
+        container.addView(getFieldView(container));
 
         return view;
     }
@@ -173,4 +177,5 @@ public abstract class LabeledFieldController extends FormElementController {
             errorView.setVisibility(View.VISIBLE);
         }
     }
+
 }

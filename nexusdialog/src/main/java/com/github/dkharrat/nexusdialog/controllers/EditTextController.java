@@ -6,20 +6,25 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.github.dkharrat.nexusdialog.FormController;
+import com.github.dkharrat.nexusdialog.R;
 import com.github.dkharrat.nexusdialog.validations.InputValidator;
 
+import java.text.Normalizer;
 import java.util.Set;
 
 /**
  * Represents a field that allows free-form text.
  */
-public class EditTextController extends LabeledFieldController {
-    private final int editTextId = FormController.generateViewId();
+public class EditTextController extends TextController {
 
     private int inputType;
     private final String placeholder;
+    private boolean readonly;
+
 
     /**
      * Constructs a new instance of an edit text field.
@@ -105,15 +110,6 @@ public class EditTextController extends LabeledFieldController {
     }
 
     /**
-     * Returns the EditText view associated with this element.
-     *
-     * @return the EditText view associated with this element
-     */
-    public EditText getEditText() {
-        return (EditText)getView().findViewById(editTextId);
-    }
-
-    /**
      * Returns a mask representing the content input type. Possible values are defined by {@link InputType}.
      *
      * @return a mask representing the content input type
@@ -121,6 +117,18 @@ public class EditTextController extends LabeledFieldController {
     public int getInputType() {
         return inputType;
     }
+
+    /**
+     * placeholder getter.
+     *
+     * @return String containing the current placeholder or null.
+     */
+    public String getPlaceholder()
+    {
+        return placeholder;
+    }
+
+
 
     private void setInputTypeMask(int mask, boolean enabled) {
         if (enabled) {
@@ -170,44 +178,5 @@ public class EditTextController extends LabeledFieldController {
         setInputTypeMask(InputType.TYPE_TEXT_VARIATION_PASSWORD, isSecureEntry);
     }
 
-    @Override
-    protected View createFieldView() {
-        final EditText editText = new EditText(getContext());
-        editText.setId(editTextId);
 
-        editText.setSingleLine(!isMultiLine());
-        if (placeholder != null) {
-            editText.setHint(placeholder);
-        }
-        editText.setInputType(inputType);
-        refresh(editText);
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                getModel().setValue(getName(), editText.getText().toString());
-            }
-        });
-
-        return editText;
-    }
-
-    private void refresh(EditText editText) {
-        Object value = getModel().getValue(getName());
-        String valueStr = value != null ? value.toString() : "";
-        if (!valueStr.equals(editText.getText().toString()))
-            editText.setText(valueStr);
-    }
-
-    @Override
-    public void refresh() {
-        refresh(getEditText());
-    }
 }

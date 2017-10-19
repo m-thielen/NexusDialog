@@ -29,6 +29,7 @@ public class FormController {
     private FormModel model;
     private ValidationErrorDisplay validationErrorDisplay;
     private static final AtomicInteger nextGeneratedViewId = new AtomicInteger(1);
+    private boolean readonly;
 
     /**
      * Constructs a new FormController.
@@ -64,6 +65,32 @@ public class FormController {
         // unregister listener first to make sure we only have one listener registered.
         getModel().removePropertyChangeListener(modelListener);
         getModel().addPropertyChangeListener(modelListener);
+    }
+
+    /**
+     * Sets the readonly flag. If set, all form elements will be switched to readonly-mode.
+     *
+     * @param readonly the new readonly flag
+     */
+    public void setReadonly(boolean readonly)
+    {
+        if (this.readonly != readonly) {
+            /* switch readonly mode in all elements */
+            for (FormSectionController section : getSections()) {
+                section.setReadonly(readonly);
+            }
+        }
+        this.readonly = readonly;
+    }
+
+    /**
+     * Gets the current value of the readonly flag.
+     *
+     * @return
+     */
+    public boolean getReadonly()
+    {
+        return this.readonly;
     }
 
     /**

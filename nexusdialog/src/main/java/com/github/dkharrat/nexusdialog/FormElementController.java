@@ -94,4 +94,12 @@ public abstract class FormElementController {
      * @param message The message to display.
      */
     public abstract void setError(String message);
+
+    /**
+     * Switch element's readonly mode.
+     *
+     * @param readonly if true, element will be readonly.
+     */
+    public abstract void setReadonly(boolean readonly);
+
 }
